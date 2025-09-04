@@ -1,14 +1,14 @@
 {
   "dependencies": {
-    "bcrypt": "^6.0.0",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^2.2.0",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
     "express-session": "^1.18.2",
     "mkdirp": "^3.0.1",
     "multer": "^2.0.2",
-    "sharp": "^0.32.6",
-    "sqlite": "^5.1.1",
-    "sqlite3": "^5.1.7"
+    "sharp": "^0.32.1",
+    "sequelize": "^6.32.1",
+    "mysql2": "^3.5.0"
   }
 }
