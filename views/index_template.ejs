@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MuazMHafidz - Creative Writing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      body {
+        background: url("<%= baseUrl %>/uploads/bg.webp") center/cover no-repeat
+          fixed;
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      .penguin {
+        position: absolute;
+        width: 100px;
+        animation: dance 4s ease-in-out infinite;
+      }
+      @media (max-width: 768px) {
+        .penguin {
+          display: none;
+        }
+      }
+      @keyframes dance {
+        0% {
+          transform: translateX(0) translateY(0) rotate(0deg) scale(1);
+        }
+        25% {
+          transform: translateX(-20px) translateY(5px) rotate(-10deg)
+            scale(1.05);
+        }
+        50% {
+          transform: translateX(0) translateY(10px) rotate(10deg) scale(0.95);
+        }
+        75% {
+          transform: translateX(20px) translateY(5px) rotate(-5deg) scale(1.02);
+        }
+        100% {
+          transform: translateX(0) translateY(0) rotate(0deg) scale(1);
+        }
+      }
+
+      .fade-in {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.6s ease-in-out;
+      }
+      .fade-in.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    </style>
+  </head>
+  <body class="font-sans min-h-screen">
+    <!-- Penguins -->
+    <img
+      src="<%= baseUrl %>/uploads/penguin1.png"
+      class="penguin"
+      style="top: 10%; animation-delay: 0s"
+    />
+    <img
+      src="<%= baseUrl %>/uploads/penguin2.png"
+      class="penguin"
+      style="top: 20%; animation-delay: 0s"
+    />
+    <img
+      src="<%= baseUrl %>/uploads/penguin2.png"
+      class="penguin"
+      style="top: 50%; animation-delay: 0s"
+    />
+    <img
+      src="<%= baseUrl %>/uploads/penguin3.png"
+      class="penguin"
+      style="top: 30%; animation-delay: 0s"
+    />
+    <img
+      src="<%= baseUrl %>/uploads/penguin1.png"
+      class="penguin"
+      style="top: 40%; animation-delay: 0s"
+    />
+    <img
+      src="<%= baseUrl %>/uploads/penguin3.png"
+      class="penguin"
+      style="top: 70%; animation-delay: 0s"
+    />
+
+    <!-- Navbar -->
+    <nav class="bg-white shadow sticky top-0 z-50">
+      <div
+        class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center"
+      >
+        <div class="text-xl font-bold">
+          <a href="<%= baseUrl %>/index.html">My Blog</a>
+        </div>
+        <div class="hidden md:flex space-x-4">
+          <a href="<%= baseUrl %>/index.html" class="hover:text-blue-600"
+            >Home</a
+          >
+          <a href="https://MuazMHafidz.my.id" class="hover:text-blue-600"
+            >About</a
+          >
+          <button id="searchToggle" class="px-2">🔍</button>
+        </div>
+        <div class="md:hidden flex items-center space-x-2">
+          <button id="searchToggleMobile" class="px-2">🔍</button>
+          <button id="mobileMenuToggle">☰</button>
+        </div>
+      </div>
+      <div
+        id="mobileMenu"
+        class="hidden flex-col px-4 py-2 space-y-2 bg-white md:hidden"
+      >
+        <a href="./index.html" class="block">Home</a>
+        <a href="./profile.html" class="block">Profile</a>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="text-center py-20 px-4 relative z-10">
+      <h1 class="text-4xl md:text-6xl font-bold mb-4 text-white drop-shadow-lg">
+        Welcome to
+        <span class="text-blue-400">Muaz Personal Blog and Article</span>
+      </h1>
+      <p class="text-gray-100 mb-6 drop-shadow-md">
+        Discover amazing stories, insights, and creative writing from passionate
+        authors
+      </p>
+      <a
+        href="#"
+        id="exploreBtn"
+        class="bg-blue-600 text-white px-6 py-3 rounded-md inline-flex items-center hover:bg-blue-700"
+      >
+        <span>Explore Articles</span><span class="ml-2">→</span>
+      </a>
+    </section>
+
+    <!-- Featured Posts -->
+    <section class="max-w-7xl mx-auto px-4 py-5 relative z-10">
+      <h2 class="text-2xl text-white font-semibold mb-6">
+        ⭐ Featured Articles
+      </h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        <% featuredArticles.forEach(article => { %>
+        <article class="bg-white rounded-md shadow-md overflow-hidden fade-in">
+          <img
+            src="<%= article.thumbnail %>"
+            alt="<%= article.title %>"
+            class="w-full h-48 object-cover"
+          />
+          <div class="p-4">
+            <h3 class="text-lg font-bold">
+              <a
+                href="article_<%= article.slug %>.html"
+                class="hover:text-blue-600 break-words"
+                ><%= article.title %></a
+              >
+            </h3>
+            <p class="text-gray-600 text-sm mt-2 break-words">
+              <%= article.content.replace(/<[^>]+>/g, "").substring(0, 80) %>...
+            </p>
+          </div>
+        </article>
+        <% }) %>
+      </div>
+    </section>
+
+    <!-- Latest Posts -->
+    <section
+      id="latestPosts"
+      class="max-w-7xl mx-auto px-4 py-10 bg-gray-100 relative z-10"
+    >
+      <h2 class="text-2xl font-semibold mb-6">📖 Latest Posts</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        <% latestArticles.forEach(article => { %>
+        <article class="bg-white rounded-md shadow-md overflow-hidden fade-in">
+          <img
+            src="<%= article.thumbnail %>"
+            alt="<%= article.title %>"
+            class="w-full h-48 object-cover"
+          />
+          <div class="p-4">
+            <h3 class="text-lg font-bold">
+              <a
+                href="article_<%= article.slug %>.html"
+                class="hover:text-blue-600 break-words"
+                ><%= article.title %></a
+              >
+            </h3>
+            <p class="text-gray-600 text-sm mt-2 break-words">
+              <%= article.content.replace(/<[^>]+>/g, "").substring(0, 80) %>...
+            </p>
+          </div>
+        </article>
+        <% }) %>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer
+      class="bg-[rgba(255,255,255,0.5)] shadow-inner py-3 mt-10 relative z-10"
+    >
+      <div class="max-w-7xl mx-auto px-4 text-center text-blue-900">
+        &copy; 2025 <a href="https://MuazMHafidz.my.id">MuazMHafidz</a>. All
+        rights reserved.
+      </div>
+    </footer>
+
+    <!-- Search Overlay -->
+    <div
+      id="searchOverlay"
+      class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex justify-center items-start overflow-auto pt-12 md:pt-20 px-2"
+    >
+      <div class="bg-white rounded-md p-4 md:p-6 w-full max-w-md relative">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search articles..."
+          class="border border-gray-300 p-2 w-full rounded mb-2"
+        />
+        <button
+          id="searchButton"
+          class="bg-blue-600 text-white px-4 py-2 rounded mb-4 w-full"
+        >
+          Search
+        </button>
+        <div
+          id="searchResults"
+          class="space-y-2 max-h-96 overflow-auto break-words"
+        ></div>
+        <button id="searchClose" class="absolute top-2 right-2 text-gray-500">
+          ✕
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // Mobile menu toggle
+      document
+        .getElementById("mobileMenuToggle")
+        ?.addEventListener("click", () => {
+          document.getElementById("mobileMenu").classList.toggle("hidden");
+        });
+
+      // Fade-in animation
+      const faders = document.querySelectorAll(".fade-in");
+      const observer = new IntersectionObserver(
+        (entries, obs) => {
+          entries.forEach((e) => {
+            if (!e.isIntersecting) return;
+            e.target.classList.add("visible");
+            obs.unobserve(e.target);
+          });
+        },
+        { threshold: 0.1 }
+      );
+      faders.forEach((f) => observer.observe(f));
+
+      // Search overlay
+      const searchToggle = document.getElementById("searchToggle");
+      const searchToggleMobile = document.getElementById("searchToggleMobile");
+      const searchOverlay = document.getElementById("searchOverlay");
+      const searchClose = document.getElementById("searchClose");
+
+      searchToggle?.addEventListener("click", () =>
+        searchOverlay.classList.remove("hidden")
+      );
+      searchToggleMobile?.addEventListener("click", () =>
+        searchOverlay.classList.remove("hidden")
+      );
+      searchClose?.addEventListener("click", () =>
+        searchOverlay.classList.add("hidden")
+      );
+
+      // Close overlay if clicked outside
+      searchOverlay?.addEventListener("click", (e) => {
+        const box = e.currentTarget.querySelector("div");
+        if (!box.contains(e.target)) searchOverlay.classList.add("hidden");
+      });
+
+      // Search enter / button
+      const searchInput = document.getElementById("searchInput");
+      const searchButton = document.getElementById("searchButton");
+      searchInput?.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && searchInput.value.trim()) {
+          window.location.href = `/search/${encodeURIComponent(
+            searchInput.value.trim()
+          )}`;
+        }
+      });
+      searchButton?.addEventListener("click", () => {
+        if (searchInput.value.trim()) {
+          window.location.href = `/search/${encodeURIComponent(
+            searchInput.value.trim()
+          )}`;
+        }
+      });
+
+      // Smooth scroll ke Latest Posts
+      const exploreBtn = document.getElementById("exploreBtn");
+      const latestSection = document.getElementById("latestPosts");
+
+      exploreBtn?.addEventListener("click", (e) => {
+        e.preventDefault();
+        latestSection.scrollIntoView({ behavior: "smooth" });
+      });
+    </script>
+  </body>
+</html>

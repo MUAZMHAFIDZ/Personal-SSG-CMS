@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /admin-cms/
+Disallow: /uploads/
+# Disallow search if needed
+# Disallow: /search/
+Allow: /
+Sitemap: https://yourdomain.com/sitemap.xml

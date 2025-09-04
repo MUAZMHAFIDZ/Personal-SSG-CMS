@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login CMS</title>
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        animation: fadeIn 1s ease-in-out;
+      }
+
+      .login-box {
+        background: #fff;
+        padding: 2rem;
+        border-radius: 16px;
+        width: 100%;
+        max-width: 360px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        transform: translateY(20px);
+        animation: slideUp 0.8s ease forwards;
+      }
+
+      .login-box h2 {
+        margin-bottom: 1.5rem;
+        font-weight: 600;
+        color: #333;
+      }
+
+      input {
+        width: 100%;
+        padding: 12px;
+        margin: 10px 0;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        transition: 0.3s;
+        font-size: 14px;
+      }
+
+      input:focus {
+        border-color: #667eea;
+        outline: none;
+        box-shadow: 0 0 6px rgba(102, 126, 234, 0.5);
+      }
+
+      button {
+        width: 100%;
+        padding: 12px;
+        margin-top: 12px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: #fff;
+        font-size: 15px;
+        font-weight: 600;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.3s ease;
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
+      }
+
+      p.error {
+        color: red;
+        margin-bottom: 10px;
+        animation: shake 0.3s ease;
+      }
+
+      /* Animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(40px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes shake {
+        0% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-5px);
+        }
+        50% {
+          transform: translateX(5px);
+        }
+        75% {
+          transform: translateX(-5px);
+        }
+        100% {
+          transform: translateX(0);
+        }
+      }
+
+      /* Responsive */
+      @media (max-width: 480px) {
+        .login-box {
+          padding: 1.5rem;
+          margin: 0 1rem;
+        }
+        .login-box h2 {
+          font-size: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-box">
+      <h2>Login Admin</h2>
+      <% if (typeof error !== "undefined") { %>
+      <p class="error"><%= error %></p>
+      <% } %>
+      <form method="post" action="/admin-cms/login">
+        <input type="text" name="username" placeholder="Username" required />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          required
+        />
+        <button type="submit">Login</button>
+      </form>
+    </div>
+  </body>
+</html>

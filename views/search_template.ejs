@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Search results for "<%= query %>" - My Blog</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        background: url("<%= baseUrl %>/uploads/bg.webp") center/cover no-repeat
+          fixed;
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      .penguin {
+        position: absolute;
+        width: 100px;
+        animation: dance 4s ease-in-out infinite;
+      }
+      @media (max-width: 768px) {
+        .penguin {
+          display: none;
+        }
+      }
+      @keyframes dance {
+        0% {
+          transform: translateX(0) translateY(0) rotate(0deg) scale(1);
+        }
+        25% {
+          transform: translateX(-20px) translateY(5px) rotate(-10deg)
+            scale(1.05);
+        }
+        50% {
+          transform: translateX(0) translateY(10px) rotate(10deg) scale(0.95);
+        }
+        75% {
+          transform: translateX(20px) translateY(5px) rotate(-5deg) scale(1.02);
+        }
+        100% {
+          transform: translateX(0) translateY(0) rotate(0deg) scale(1);
+        }
+      }
+
+      .fade-in {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.6s ease-in-out;
+      }
+      .fade-in.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .search-section {
+        position: relative;
+        z-index: 10;
+      }
+    </style>
+  </head>
+  <body class="font-sans bg-gray-50 min-h-screen">
+    <img
+      src="<%= baseUrl %>/uploads/penguin1.png"
+      class="penguin"
+      style="top: 10%; animation-delay: 0s"
+    />
+    <img
+      src="<%= baseUrl %>/uploads/penguin2.png"
+      class="penguin"
+      style="top: 20%; animation-delay: 0.5s"
+    />
+    <img
+      src="<%= baseUrl %>/uploads/penguin3.png"
+      class="penguin"
+      style="top: 40%; animation-delay: 1s"
+    />
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+      <div
+        class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center"
+      >
+        <div class="text-xl font-bold"><a href="/index.html">My Blog</a></div>
+        <div class="hidden md:flex space-x-4">
+          <a href="<%= baseUrl %>/index.html" class="hover:text-blue-600"
+            >Home</a
+          >
+          <a href="https://MuazMHafidz.my.id" class="hover:text-blue-600"
+            >About</a
+          >
+        </div>
+      </div>
+    </nav>
+
+    <!-- Search Bar -->
+    <section class="max-w-7xl mx-auto px-10 md:px-24 py-6">
+      <form
+        id="searchForm"
+        class="flex flex-col md:flex-row items-center gap-2"
+      >
+        <input
+          type="text"
+          id="searchInput"
+          value="<%= query %>"
+          placeholder="Search articles..."
+          class="border border-gray-300 p-2 w-full rounded"
+        />
+        <button
+          type="submit"
+          class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          Search
+        </button>
+      </form>
+    </section>
+
+    <!-- Search Results Section -->
+    <section class="max-w-7xl mx-auto px-4 py-10">
+      <% if(results.length === 0){ %>
+      <p class="text-gray-600">No results found. Try different keywords.</p>
+      <% } else { %>
+      <div class="grid md:grid-cols-3 gap-6">
+        <% results.forEach(article => { %>
+        <article class="bg-white rounded-md shadow-md overflow-hidden fade-in">
+          <img
+            src="<%= article.thumbnail %>"
+            alt="<%= article.title %>"
+            class="w-full h-48 object-cover"
+          />
+          <div class="p-4">
+            <h3 class="text-lg font-bold">
+              <a
+                href="/<%= article.slug %>.html"
+                class="hover:text-blue-600 break-words"
+                ><%= article.title %></a
+              >
+            </h3>
+            <p class="text-gray-600 text-sm mt-2 break-words">
+              <%= article.content.replace(/<[^>]+>/g, "").substring(0, 100)
+              %>...
+            </p>
+          </div>
+        </article>
+        <% }) %>
+      </div>
+      <% } %>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white shadow-inner py-6 mt-10">
+      <div class="max-w-7xl mx-auto px-4 text-center text-gray-600">
+        &copy; 2025
+        <a href="https://MuazMHafidz.my.id" class="hover:text-blue-600"
+          >MuazMHafidz</a
+        >. All rights reserved.
+      </div>
+    </footer>
+
+    <!-- Fade-in Script & Search Submit -->
+    <script>
+      // Fade-in animation
+      const faders = document.querySelectorAll(".fade-in");
+      const observer = new IntersectionObserver(
+        (entries, obs) => {
+          entries.forEach((e) => {
+            if (!e.isIntersecting) return;
+            e.target.classList.add("visible");
+            obs.unobserve(e.target);
+          });
+        },
+        { threshold: 0.1 }
+      );
+      faders.forEach((f) => observer.observe(f));
+
+      // Search submit
+      const searchForm = document.getElementById("searchForm");
+      const searchInput = document.getElementById("searchInput");
+      searchForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const query = searchInput.value.trim();
+        if (query)
+          window.location.href = `/search/${encodeURIComponent(query)}`;
+      });
+    </script>
+  </body>
+</html>

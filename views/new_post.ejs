@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New Post</title>
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Quill CSS -->
+    <link
+      href="https://cdn.quilljs.com/1.3.6/quill.snow.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, #89f7fe, #66a6ff);
+        min-height: 100vh;
+        margin: 0;
+        padding: 30px 20px;
+        animation: fadeIn 0.8s ease;
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        font-weight: 600;
+        color: #333;
+      }
+
+      .back-link {
+        display: inline-block;
+        margin-bottom: 20px;
+        text-decoration: none;
+        color: #667eea;
+        font-weight: 500;
+        transition: color 0.3s ease;
+      }
+      .back-link:hover {
+        color: #764ba2;
+      }
+
+      form {
+        max-width: 800px;
+        margin: 0 auto;
+        background: #fff;
+        padding: 20px 25px;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        animation: slideUp 0.7s ease;
+      }
+
+      input[type="text"] {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: border 0.3s, box-shadow 0.3s;
+      }
+
+      input[type="text"]:focus {
+        border-color: #667eea;
+        outline: none;
+        box-shadow: 0 0 6px rgba(102, 126, 234, 0.4);
+      }
+
+      #editor {
+        height: 400px;
+      }
+
+      .ql-toolbar.ql-snow {
+        border-radius: 8px 8px 0 0;
+      }
+
+      .ql-container.ql-snow {
+        border-radius: 0 0 8px 8px;
+      }
+
+      button {
+        display: inline-block;
+        margin-top: 14px;
+        padding: 12px 20px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        transition: transform 0.2s ease, box-shadow 0.3s ease;
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
+      }
+
+      /* Modal */
+      .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+      .modal-content {
+        background: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        max-width: 700px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+        animation: fadeIn 0.3s ease;
+      }
+      .image-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 12px;
+      }
+      .image-grid img {
+        width: 100%;
+        height: 100px;
+        object-fit: cover;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: transform 0.2s ease;
+      }
+      .image-grid img:hover {
+        transform: scale(1.05);
+      }
+
+      /* Animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(40px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Responsive */
+      @media (max-width: 600px) {
+        form {
+          padding: 15px;
+        }
+        h1 {
+          font-size: 22px;
+        }
+        button {
+          font-size: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>New Post</h1>
+    <a href="/admin-cms/posts" class="back-link">← Back</a>
+    <form method="post" action="/admin-cms/posts">
+      <input type="text" name="title" placeholder="Post Title" required />
+      <!-- Thumbnail Input + Button -->
+      <div style="display: flex; gap: 8px; margin-bottom: 12px">
+        <input
+          type="text"
+          id="thumbnailInput"
+          name="thumbnail"
+          placeholder="Thumbnail URL / pilih dari Image Manager"
+          value=""
+        />
+        <button type="button" id="pickThumbnailBtn">Pilih</button>
+      </div>
+
+      <!-- Modal Image Manager khusus thumbnail -->
+      <div class="modal" id="thumbnailModal">
+        <div class="modal-content">
+          <h3>Pilih Thumbnail</h3>
+          <div class="image-grid" id="thumbnailGrid"></div>
+        </div>
+      </div>
+
+      <!-- Script khusus thumbnail -->
+      <script>
+        const pickThumbnailBtn = document.getElementById("pickThumbnailBtn");
+        const thumbnailInput = document.getElementById("thumbnailInput");
+        const thumbnailModal = document.getElementById("thumbnailModal");
+        const thumbnailGrid = document.getElementById("thumbnailGrid");
+
+        pickThumbnailBtn.addEventListener("click", () => {
+          thumbnailModal.style.display = "flex";
+
+          fetch("/admin-cms/image-manager")
+            .then((res) => res.json())
+            .then((files) => {
+              thumbnailGrid.innerHTML = "";
+              files.forEach((file) => {
+                const img = document.createElement("img");
+                img.src = `/uploads/${file}`;
+                img.onclick = () => {
+                  thumbnailInput.value = img.src;
+                  thumbnailModal.style.display = "none";
+                };
+                thumbnailGrid.appendChild(img);
+              });
+            });
+        });
+
+        // tutup modal kalau klik luar
+        thumbnailModal.addEventListener("click", (e) => {
+          if (e.target === thumbnailModal)
+            thumbnailModal.style.display = "none";
+        });
+      </script>
+
+      <input
+        type="text"
+        name="categories"
+        placeholder="Categories (pisahkan dengan koma)"
+      />
+      <input
+        type="text"
+        name="tags"
+        placeholder="Tags (pisahkan dengan koma)"
+      />
+      <input type="text" name="meta_title" placeholder="Meta Title" />
+      <input
+        type="text"
+        name="meta_description"
+        placeholder="Meta Description"
+      />
+      <input
+        type="text"
+        name="meta_keywords"
+        placeholder="Meta Keywords (pisahkan dengan koma)"
+      />
+
+      <div id="editor"></div>
+      <input type="hidden" name="content" id="content" />
+      <button type="submit">Save</button>
+    </form>
+
+    <!-- Modal Image Manager -->
+    <div class="modal" id="imageModal">
+      <div class="modal-content">
+        <h3>Pilih Gambar</h3>
+        <div class="image-grid" id="imageGrid"></div>
+      </div>
+    </div>
+
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quill-image-resize-module@3.0.0/image-resize.min.js"></script>
+    <script>
+      // === Modal Image Manager ===
+      const modal = document.getElementById("imageModal");
+      const imageGrid = document.getElementById("imageGrid");
+
+      // Definisikan dulu handler
+      function imageHandler() {
+        modal.style.display = "flex";
+
+        fetch("/admin-cms/image-manager")
+          .then((res) => res.json())
+          .then((files) => {
+            imageGrid.innerHTML = "";
+            files.forEach((file) => {
+              const img = document.createElement("img");
+              img.src = `/uploads/${file}`;
+              img.onclick = () => {
+                const range = quill.getSelection(true);
+                quill.insertEmbed(range.index, "image", img.src);
+                modal.style.display = "none";
+              };
+              imageGrid.appendChild(img);
+            });
+          });
+      }
+
+      // Baru inisialisasi Quill setelah handler ada
+      const quill = new Quill("#editor", {
+        theme: "snow",
+        modules: {
+          toolbar: {
+            container: [
+              ["bold", "italic", "underline", "strike"],
+              ["blockquote", "code-block"],
+              [{ header: 1 }, { header: 2 }],
+              [{ list: "ordered" }, { list: "bullet" }],
+              [{ script: "sub" }, { script: "super" }],
+              [{ indent: "-1" }, { indent: "+1" }],
+              [{ direction: "rtl" }],
+              [{ size: ["small", false, "large", "huge"] }],
+              [{ color: [] }, { background: [] }],
+              [{ font: [] }],
+              [{ align: [] }],
+              ["link", "image", "video"],
+              ["clean"],
+            ],
+            handlers: {
+              image: imageHandler, // custom handler sudah terdefinisi
+            },
+          },
+          imageResize: {
+            parchment: Quill.import("parchment"),
+          },
+        },
+      });
+
+      // close modal kalau klik luar
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) modal.style.display = "none";
+      });
+
+      // simpan isi editor
+      document.querySelector("form").onsubmit = function () {
+        document.querySelector("#content").value = quill.root.innerHTML;
+      };
+    </script>
+  </body>
+</html>

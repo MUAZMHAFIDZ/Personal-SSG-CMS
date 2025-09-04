@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Posts CMS</title>
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, #eeeeff, #fad0c4);
+        min-height: 100vh;
+        padding: 100px 20px 40px; /* kasih jarak buat navbar fixed */
+        animation: fadeIn 0.8s ease;
+      }
+
+      /* Navbar */
+      .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 30px;
+        z-index: 1000;
+      }
+
+      .navbar h1 {
+        color: #fff;
+        font-size: 20px;
+        font-weight: 600;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: #fff;
+        font-weight: 500;
+        margin-left: 18px;
+        padding: 8px 14px;
+        border-radius: 6px;
+        transition: background 0.3s ease, transform 0.2s ease;
+      }
+
+      .nav-links a:hover {
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateY(-2px);
+      }
+
+      .table-container {
+        overflow-x: auto;
+        border-radius: 12px;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+        animation: slideUp 0.7s ease;
+        background: #fff;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 600px;
+      }
+
+      th,
+      td {
+        padding: 12px 16px;
+        border-bottom: 1px solid #eee;
+        text-align: left;
+      }
+
+      th {
+        background: #667eea;
+        color: #fff;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 13px;
+      }
+
+      tr {
+        transition: background 0.3s ease;
+      }
+
+      tr:hover {
+        background: #f7f7f7;
+      }
+
+      td a {
+        margin: 0 6px;
+        font-size: 14px;
+        color: #667eea;
+        font-weight: 500;
+        text-decoration: none;
+      }
+
+      td a:hover {
+        color: #764ba2;
+      }
+
+      /* Animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(40px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Responsive */
+      @media (max-width: 600px) {
+        body {
+          padding: 80px 10px 20px;
+        }
+        .navbar h1 {
+          font-size: 16px;
+        }
+        .nav-links a {
+          margin-left: 10px;
+          padding: 6px 10px;
+          font-size: 14px;
+        }
+        th,
+        td {
+          padding: 10px;
+          font-size: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <h1>Posts CMS</h1>
+      <div class="nav-links">
+        <a href="/admin-cms/posts/new">+ New Post</a>
+        <a href="/admin-cms/rilis-index">+ Index Html</a>
+        <a href="/admin-cms/images">Image Manager</a>
+        <a href="/admin-cms/logout">Logout</a>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Created</th>
+          <th>Action</th>
+        </tr>
+        <% posts.forEach(p => { %>
+        <tr>
+          <td><%= p.id %></td>
+          <td><%= p.title %></td>
+          <td><%= p.created_at %></td>
+          <td>
+            <a href="/admin-cms/posts/rilis/<%= p.id %>">Rilis</a> |
+            <a href="/admin-cms/posts/edit/<%= p.id %>">Edit</a> |
+            <a href="/admin-cms/posts/delete/<%= p.id %>">Delete</a>
+          </td>
+        </tr>
+        <% }) %>
+      </table>
+    </div>
+  </body>
+</html>

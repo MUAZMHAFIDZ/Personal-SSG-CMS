@@ -1,0 +1,7 @@
+# redirect /index.html ke /
+RewriteEngine On
+
+# /slug.html tetap /slug.html
+# Admin CMS di /admin-cms/* aman, tidak tersentuh
+RewriteCond %{REQUEST_URI} !^/admin-cms/
+RewriteRule ^index\.html$ / [R=301,L]
